@@ -1,7 +1,1 @@
-div
-  - if user_authorized?
-    p= link_to 'Выход', sign_out_path
-  - else
-    = authorize_with_yandex_link(response_type: :code)
-
 p= session[:yandex_access_token]
