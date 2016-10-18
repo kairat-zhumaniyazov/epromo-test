@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   root to: 'ya_direct#index'
 
   get 'auth/yandex' => 'auth_callbacks#yandex'
+  get '/sign_out' => 'sessions#sign_out'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
