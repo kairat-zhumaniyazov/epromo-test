@@ -1,0 +1,5 @@
+div class="accordian-body collapse  c-keywords-#{c['Id']}"
+  table.table.table-striped
+    - c['keywords'].each do |kw|
+      tr
+        td= kw[1]['Keyword']

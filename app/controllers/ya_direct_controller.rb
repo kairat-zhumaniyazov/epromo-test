@@ -2,19 +2,52 @@ class YaDirectController < ApplicationController
   def index
     return if session[:yandex_access_token].nil? || session[:yandex_access_token].blank?
 
-    # ya_params = {
-    #   "method": "GetCampaignsList",
-    #   "locale": "ru",
-    #   "token": session[:yandex_access_token]
-    # }
-    #
-    # conn = Faraday.new(:url => 'https://api-sandbox.direct.yandex.ru')
-    #
-    # # post payload as JSON instead of "www-form-urlencoded" encoding:
-    # @res = conn.post do |req|
-    #   req.url '/v4/json/'
-    #   req.headers['Content-Type'] = 'application/json'
-    #   req.body = ya_params.to_json
-    # end
+    headers = {
+      "Authorization": "Bearer #{session[:yandex_access_token]}",
+      'Accept-Language': 'en'
+    }
+
+    query = {
+      "method": "get",
+      "params": {
+        "SelectionCriteria": {},
+        "FieldNames": [ "Id", "Name" ], #{"DailyBudget", "Funds", "Statistics", "Type" ],
+        "TextCampaignFieldNames": ["RelevantKeywords" ],
+      }
+    }
+
+    @campaigns = HTTParty.post(
+      "https://api-sandbox.direct.yandex.com/json/v5/campaigns",
+      body: query.to_json,
+      headers: headers
+    ).parsed_response['result']['Campaigns']
+
+    kw_query = {
+      "method": "get",
+      'params': {
+        'SelectionCriteria': {
+          "CampaignIds": @campaigns.map{|c| c['Id']}
+        },
+        "FieldNames": ["Id", "CampaignId", "Keyword", "Bid", "ContextBid", "Productivity", 'StatisticsSearch']
+      }
+    }
+
+    @kw = HTTParty.post(
+      "https://api-sandbox.direct.yandex.com/json/v5/keywords",
+      body: kw_query.to_json,
+      headers: headers
+    ).parsed_response['result']['Keywords']
+
+
+    @res = {}
+    @campaigns.each do |c|
+      @res.merge!(c['Id'] => c)
+      @res[c['Id']]['keywords'] = {}
+    end
+    @kw.each do |kw|
+     @res[kw['CampaignId']]['keywords'][kw['Id']] = kw
+    end
   end
 end
+
+
