@@ -1,0 +1,18 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+
+development:
+  <<: *default
+  database: epromo_test_development
+
+test:
+  <<: *default
+  database: epromo_test_test
+
+production:
+  <<: *default
+  database: epromo_test_production
+  username: epromo_test
+  password: <%= ENV['BITCOIN_FARM_DATABASE_PASSWORD'] %>
