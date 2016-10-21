@@ -13,6 +13,7 @@ test:
 
 production:
   <<: *default
-  database: epromo_test_production
-  username: epromo_test
-  password: <%= ENV['BITCOIN_FARM_DATABASE_PASSWORD'] %>
+  host: ec2-54-243-203-87.compute-1.amazonaws.com
+  database: d2hdjo2qkrqmog
+  username: jkrhnzwniewzvp
+  password: BdEnZ5i4fchT6l3E05L7GJWkWR
