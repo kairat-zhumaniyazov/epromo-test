@@ -1,11 +1,19 @@
 - if @res && @res.any?
   table.table.table-responsive.table-hover
+    thead
+      tr
+        td.col-md-8 Кампания
+        td Клики
+        td Показы
+        td Цена
     - @res.each do |c|
-      tr.clickable.accordion-toggle data-toggle='collapse' id= c[1]['Id'] data-target=".c-keywords-#{c[1]['Id']}"
+      tr.clickable.campaign data-toggle='collapse' id= c[1]['Id'] data-target=".c-keywords-#{c[1]['Id']}"
         td
-          span.glyphicon.glyphicon-chevron-right.sub-row-arrow-left aria-hidden="true" 
+          span.glyphicon.glyphicon-chevron-right.sub-row-arrow-left aria-hidden="true"
           = c[1]['Name']
 
-      tr.campaign-keywords
-        td.hiddenRow colspan="12"
-          = render partial: "keywords_table", locals: {c: c[1]}
+        td= c[1]['TotalClicks']
+        td= c[1]['TotalImpressions']
+        td= number_to_currency(c[1]['TotalBid'])
+
+      = render partial: "keywords_table", locals: {c: c[1]}

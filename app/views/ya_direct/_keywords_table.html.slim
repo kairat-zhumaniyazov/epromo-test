@@ -1,5 +1,6 @@
-div class="accordian-body collapse  c-keywords-#{c['Id']}"
-  table.table.table-striped
-    - c['keywords'].each do |kw|
-      tr
-        td= kw[1]['Keyword']
+- c['keywords'].each do |kw|
+  tr class="c-keywords-#{c['Id']} collapse"
+    td= kw[1]['Keyword']
+    td= kw[1]['StatisticsSearch']['Clicks']
+    td= kw[1]['StatisticsSearch']['Impressions']
+    td= number_to_currency(kw[1]['Bid'])

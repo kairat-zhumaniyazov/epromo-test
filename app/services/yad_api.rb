@@ -37,6 +37,7 @@ class YadAPI
     ).parsed_response['result']['Keywords']
 
 
+    # собираем в 1 хеш
     res = {}
     campaigns.each do |c|
       res.merge!(c['Id'] => c)
@@ -44,6 +45,13 @@ class YadAPI
     end
     keywords.each do |kw|
      res[kw['CampaignId']]['keywords'][kw['Id']] = kw
+    end
+
+    # подсчитываем суммы
+    res.each do |c|
+      c[1]['TotalBid'] = c[1]['keywords'].map{|h| h[1]['Bid']}.reduce(:+)
+      c[1]['TotalClicks'] = c[1]['keywords'].map{|h| h[1]['StatisticsSearch']['Clicks']}.reduce(:+)
+      c[1]['TotalImpressions'] = c[1]['keywords'].map{|h| h[1]['StatisticsSearch']['Impressions']}.reduce(:+)
     end
     res
   end
