@@ -1,6 +1,6 @@
 class YaDirectController < ApplicationController
   def index
-    return if session[:yandex_access_token].nil? || session[:yandex_access_token].blank?
+    return unless authenticated?
 
     @res = YadAPI.get_campaigns(session[:yandex_access_token])
   end
