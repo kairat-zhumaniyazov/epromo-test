@@ -1,4 +1,8 @@
 class Campaign < ActiveRecord::Base
+  has_many :keywords, dependent: :destroy
+
+  validates :name, presence: true
+
   def self.data_proccesing(yad_list)
     # все айди из ответа яндекса
     yad_ids = yad_list.map{ |c| c['Id'] }
