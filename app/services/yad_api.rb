@@ -20,22 +20,7 @@ class YadAPI
       headers: headers
     ).parsed_response['result']['Campaigns']
 
-    kw_query = {
-      "method": "get",
-      'params': {
-        'SelectionCriteria': {
-          "CampaignIds": campaigns.map{|c| c['Id']}
-        },
-        "FieldNames": ["Id", "CampaignId", "Keyword", "Bid", "ContextBid", "Productivity", 'StatisticsSearch']
-      }
-    }
-
-    keywords = HTTParty.post(
-      "https://api-sandbox.direct.yandex.com/json/v5/keywords",
-      body: kw_query.to_json,
-      headers: headers
-    ).parsed_response['result']['Keywords']
-
+    keywords = get_keywords(headers, campaigns.map{|c| c['Id']})
 
     # собираем в 1 хеш
     res = {}
@@ -54,5 +39,23 @@ class YadAPI
       c[1]['TotalImpressions'] = c[1]['keywords'].map{|h| h[1]['StatisticsSearch']['Impressions']}.reduce(:+)
     end
     res
+  end
+
+  def self.get_keywords(headers, campaigns_ids_arr)
+    kw_query = {
+      "method": "get",
+      'params': {
+        'SelectionCriteria': {
+          "CampaignIds": campaigns_ids_arr
+        },
+        "FieldNames": ["Id", "CampaignId", "Keyword", "Bid", "ContextBid", "Productivity", 'StatisticsSearch']
+      }
+    }
+
+    keywords = HTTParty.post(
+      "https://api-sandbox.direct.yandex.com/json/v5/keywords",
+      body: kw_query.to_json,
+      headers: headers
+    ).parsed_response['result']['Keywords']
   end
 end
