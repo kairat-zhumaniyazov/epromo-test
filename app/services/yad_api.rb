@@ -6,7 +6,10 @@ class YadAPI
     }
 
     campaigns = get_campaigns(headers)
-    keywords = get_keywords(headers, campaigns.map{|c| c['Id']})
+    keywords = get_keywords(headers, campaigns.map{ |c| c['Id'] })
+
+    # Операци с кампаниями
+    Campaign.data_proccesing(campaigns)
 
     # собираем в 1 хеш
     res = {}
