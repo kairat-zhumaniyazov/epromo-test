@@ -1,3 +1,10 @@
+- if !user_authorized?
+  div.need-auth-info
+    p.text-center Для получения информации по кампаниям вы должны сначала пройти авторизация через Яндекс.Директ.
+    p.text-center
+      = authorize_with_yandex_link(response_type: :code)
+
+
 - if @res && @res.any?
   table.table.table-responsive.table-hover
     thead
