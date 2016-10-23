@@ -10,6 +10,7 @@ class YadAPI
 
     # Операци с кампаниями
     Campaign.data_proccesing(campaigns)
+    Keyword.data_proccesing(keywords)
 
     # собираем в 1 хеш
     res = {}
