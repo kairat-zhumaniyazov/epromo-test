@@ -1,12 +1,9 @@
 class YadAPI
   def self.get_yadirect_data(token)
-    headers = {
-      "Authorization": "Bearer #{token}",
-      'Accept-Language': 'en'
-    }
+    set_requests_headers(token)
 
-    campaigns = get_campaigns(headers)
-    keywords = get_keywords(headers, campaigns.map{ |c| c['Id'] })
+    campaigns = get_campaigns
+    keywords = get_keywords(campaigns.map{ |c| c['Id'] })
 
     # Операци с кампаниями
     Campaign.data_proccesing(campaigns)
@@ -31,24 +28,24 @@ class YadAPI
     res
   end
 
-  def self.get_campaigns(headers)
+  def self.get_campaigns
     query = {
       "method": "get",
       "params": {
         "SelectionCriteria": {},
-        "FieldNames": [ "Id", "Name" ], #{"DailyBudget", "Funds", "Statistics", "Type" ],
+        "FieldNames": [ "Id", "Name" ],
         "TextCampaignFieldNames": ["RelevantKeywords" ],
       }
     }
 
-    campaigns = HTTParty.post(
+    res = HTTParty.post(
       "https://api-sandbox.direct.yandex.com/json/v5/campaigns",
       body: query.to_json,
-      headers: headers
+      headers: @requests_headers
     ).parsed_response['result']['Campaigns']
   end
 
-  def self.get_keywords(headers, campaigns_ids_arr)
+  def self.get_keywords(campaigns_ids_arr)
     query = {
       "method": "get",
       'params': {
@@ -62,7 +59,16 @@ class YadAPI
     keywords = HTTParty.post(
       "https://api-sandbox.direct.yandex.com/json/v5/keywords",
       body: query.to_json,
-      headers: headers
+      headers: @requests_headers
     ).parsed_response['result']['Keywords']
+  end
+
+  private
+
+  def self.set_requests_headers(token)
+    @requests_headers = {
+      "Authorization": "Bearer #{token}",
+      'Accept-Language': 'en'
+    }
   end
 end
